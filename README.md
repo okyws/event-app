@@ -34,7 +34,7 @@ REST API sederhana untuk membuat, melihat, mengubah, dan menghapus data event. A
    go run .
    ```
 
-   Saat aplikasi mulai, GORM akan membuat atau memperbarui tabel event secara otomatis. API berjalan di `http://localhost:8080`.
+   Saat aplikasi mulai, GORM akan membuat atau memperbarui tabel secara otomatis. API berjalan di `http://localhost:8080`.
 
 ## Endpoint API
 
@@ -42,6 +42,8 @@ Semua endpoint menggunakan prefix `/api/v1`.
 
 | Method | Endpoint | Keterangan |
 | --- | --- | --- |
+| `POST` | `/api/v1/register` | Membuat user |
+| `POST` | `/api/v1/login` | Melakukan login |
 | `GET` | `/api/v1/events` | Mendapatkan semua event |
 | `POST` | `/api/v1/event` | Membuat event |
 | `GET` | `/api/v1/event/:id` | Mendapatkan event berdasarkan ID |

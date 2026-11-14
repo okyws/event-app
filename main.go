@@ -29,6 +29,9 @@ func main() {
 
 	api := r.Group("/api/v1")
 	{
+		api.POST("auth/register", controller.RegisterUser)
+		api.POST("auth/login", controller.LoginUser)
+
 		api.GET("/events", controller.GetEvents)
 		api.POST("/event", controller.CreateEvent)
 		api.GET("/event/:id", controller.GetEventByID)
