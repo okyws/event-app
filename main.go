@@ -17,8 +17,8 @@ func main() {
 	}
 
 	// Connect to database
-	db := config.ConnectDatabase()
-	sqlDB, err := db.DB()
+	config.DB = config.ConnectDatabase()
+	sqlDB, err := config.DB.DB()
 	if err != nil {
 		log.Fatal("Error getting underlying database connection: ", err)
 	}

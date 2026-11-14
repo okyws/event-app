@@ -30,7 +30,10 @@ func CreateEvent(c *gin.Context) {
 
 func GetEvents(c *gin.Context) {
 	var events []model.Event
-	config.DB.Find(&events)
+	if err := config.DB.Find(&events).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	if len(events) == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -47,11 +50,7 @@ func GetEvents(c *gin.Context) {
 func GetEventByID(c *gin.Context) {
 	var event model.Event
 	id := c.Param("id")
-	config.DB.First(&event, id)
-
-	// Check if event exists
-	err := config.DB.First(&event, id).Error
-	if err != nil {
+	if err := config.DB.First(&event, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Event not found",
 		})
@@ -64,11 +63,10 @@ func GetEventByID(c *gin.Context) {
 }
 
 func UpdateEvent(c *gin.Context) {
-	db := config.ConnectDatabase()
 	var event model.Event
 	id := c.Param("id")
 
-	if err := db.First(&event, id).Error; err != nil {
+	if err := config.DB.First(&event, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Event not found",
 		})
@@ -80,7 +78,7 @@ func UpdateEvent(c *gin.Context) {
 		return
 	}
 
-	if err := db.Model(&event).Updates(event).Error; err != nil {
+	if err := config.DB.Model(&event).Updates(event).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -92,18 +90,17 @@ func UpdateEvent(c *gin.Context) {
 }
 
 func DeleteEvent(c *gin.Context) {
-	db := config.ConnectDatabase()
 	var event model.Event
 	id := c.Param("id")
 
-	if err := db.First(&event, id).Error; err != nil {
+	if err := config.DB.First(&event, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "Event not found",
 		})
 		return
 	}
 
-	if err := db.Delete(&event).Error; err != nil {
+	if err := config.DB.Delete(&event).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
