@@ -20,7 +20,17 @@ func CreateEvent(c *gin.Context) {
 		newEvent.DateTime = time.Now()
 	}
 
-	config.DB.Create(&newEvent)
+	userID := c.GetFloat64("user_id")
+	if userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in context"})
+		return
+	}
+	newEvent.UserID = uint(userID)
+
+	if err := config.DB.Create(&newEvent).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Event created successfully",
@@ -77,6 +87,13 @@ func UpdateEvent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	userID := c.GetFloat64("user_id")
+	if userID == 0 {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found in context"})
+		return
+	}
+	event.UserID = uint(userID)
 
 	if err := config.DB.Model(&event).Updates(event).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

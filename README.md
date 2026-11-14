@@ -59,7 +59,6 @@ Field `name`, `description`, `location`, dan `user_id` wajib diisi. Field `datet
   "name": "Konferensi Teknologi",
   "description": "Diskusi tentang teknologi terkini",
   "location": "Jakarta",
-  "user_id": 1,
   "datetime": "2026-12-01T09:00:00+07:00"
 }
 ```
