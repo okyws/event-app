@@ -3,6 +3,7 @@ package main
 import (
 	"event-app/config"
 	"event-app/controller"
+	"event-app/middlewares"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -31,12 +32,17 @@ func main() {
 	{
 		api.POST("auth/register", controller.RegisterUser)
 		api.POST("auth/login", controller.LoginUser)
-
 		api.GET("/events", controller.GetEvents)
-		api.POST("/event", controller.CreateEvent)
 		api.GET("/event/:id", controller.GetEventByID)
-		api.PUT("/event/:id", controller.UpdateEvent)
-		api.DELETE("/event/:id", controller.DeleteEvent)
+
+		protected := api.Group("/")
+		protected.Use(middlewares.AuthMiddleware())
+		{
+			protected.GET("/auth/me", controller.GetUser)
+			protected.POST("/event", controller.CreateEvent)
+			protected.PUT("/event/:id", controller.UpdateEvent)
+			protected.DELETE("/event/:id", controller.DeleteEvent)
+		}
 	}
 
 	// Start server on port 8080 (default)
